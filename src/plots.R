@@ -1,6 +1,10 @@
+# Code used to generate the main figures in the original version
+# of the article, the organization of the figures is the same.
+
 #### Figure 1: Hierarchical model example ####
-load('data/unif_h.RData')
+load('data/unif_h.Rdata')
 pdf('fig/unfi_h.pdf',height = 4)
+col.fx <- "#AA596C"
 par(oma=c(1,1,0.1,0.1))
 par(fig=c(0,0.5,0,0.9),
     mai=c(0.5,0.5,0.1,0.1))
