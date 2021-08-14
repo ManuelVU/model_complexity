@@ -133,7 +133,7 @@ dev.off()
 # load joint distribution hierarchical model 2 participants
 load(file='data/ppd_hierarchical_psychophysics.Rdata')
 
-# load hoint distribution independent model 2 participants
+# load joint distribution independent model 2 participants
 load(file='data/ppd_independent_psychophysics.Rdata')
 
 pdf(file = 'fig/joint_ppe.pdf',width = 8,height = 3.4)
@@ -208,4 +208,163 @@ legend('bottom',legend=c('two participants','six participants','hierarchical','i
        pch = c(NA,NA,18,16),bty='n',lty=c(1,4,NA,NA),cex=0.9)
 mtext("Prior Predivtive Entropy",line=2.5,side=2)
 mtext("Target Stimulus Duration",line=2.3,side=1)
+dev.off()
+
+#### Figure 5: Prior predictive nested models example ####
+
+# load prior predictive data for sample size n = 10
+load('data/nested_ppd.Rdata')
+
+# load entropy surface for sample size n = 10
+load('data/nested_entropysurface.Rdata')
+
+# colors for plot
+col.ssp <- c("#90afc5", "#2a3132", "#4d0516","#336b87","#00d4ff")
+
+pdf(file = 'fig/bb3.pdf',width = 7,height = 5.7)
+par(oma=c(2.3,3,1,.1))
+layout(rbind(c(1,2),c(3,4)))
+par(mai=c(0.3,0.3,0.1,0.1))
+par(yaxs='i')
+plot(seq(0,1,0.1),prior.pred[1,1,],type='n',lty=1,axes=F,
+     ann=F,col="#08306b",ylim=c(0,0.4),lwd=2)
+box(bty='l')
+mtext(expression(paste('Beta-Binomial (',alpha,' =1, ',beta,' =1, ',n,' =10)')),side=3,line=0,cex=1)
+legend('topright',legend=bquote(paste(H(hat(y))," = ",.(round(entropy[1,1],2)))),col="#08306b",
+       bty='n',cex=1.2)
+legend('left',legend=c('Prior Distribution',"Prior Predictive"),pch=c(15,15),
+       bty='n',cex=1.7,col=c(col.ssp[1],col.ssp[2]))
+dx <- dbeta(seq(0,1,0.001),1,1)
+dx <- max(prior.pred[1,1,])*dx/max(dx)
+polygon(c(seq(0,1,0.001),rev(seq(0,1,0.001))),c(dx,rep(0,length(dx))),border=F,col=col.ssp[1])
+lines(seq(0,1,0.1),prior.pred[1,1,],type='h',lty=1,col=col.ssp[2],lwd=2.5)
+axis(1,at=seq(0,1,.2),labels=rep('',length(seq(0,10,2))),pos=c(0,0),cex.axis=1.8,padj=0.2)
+axis(2,las=2,cex.axis=1.5,at=seq(0.1,0.4,0.1),hadj = 0.85)
+
+plot(seq(0,1,0.1),prior.pred[1,1,],type='n',lty=1,axes=F,
+     ann=F,col="#08306b",ylim=c(0,0.4),lwd=2)
+box(bty='l')
+mtext(expression(paste('Binomial (',theta,' =0.5, ',n,' =10)')),side=3,line=0,cex=1)
+legend('topright',legend=bquote(paste(H(hat(y))," = ",.(round(-sum(dbinom(x = seq(0,10),10,prob = 0.5)*
+                                                                     log(dbinom(x = seq(0,10),10,prob = 0.5))),2)))),col="#08306b",
+       bty='n',cex=1.2)
+abline(v=0.5,col=col.ssp[1],lwd=1.2)
+lines(seq(0,1,0.1),dbinom(0:10,10,0.5),type='h',lty=1,col=col.ssp[2],lwd=2.5)
+axis(1,at=seq(0,1,.2),labels=rep('',length(seq(0,10,2))),pos=c(0,0),cex.axis=1.8,padj=0.2)
+axis(2,las=2,cex.axis=1.5,at=seq(0.1,0.4,0.1),labels=rep('',length(seq(0.1,0.4,0.1))),hadj = 0.85)
+
+plot(seq(0,1,0.1),prior.pred[10,90,],type='n',lty=1,axes=F,
+     ann=F,col="#0a9db0",lwd=2,ylim=c(0,0.4))
+legend('topright',legend=bquote(paste(H(hat(y))," = ",.(round(entropy[10,90],2)))),col="#177e89",
+       bty='n',cex=1.2)
+mtext(expression(paste('Beta-Binomial (',alpha,' =10, ',beta,' =90, ',n,' =10)')),side=3,line=0,cex=1)
+box(bty='l')
+dx <- dbeta(seq(0,1,0.001),10,90)
+dx <- max(prior.pred[10,90,])*dx/max(dx)
+polygon(c(seq(0,1,0.001),seq(0,1,0.001)),c(dx,rep(0,length(dx))),border=F,col=col.ssp[1])
+lines(seq(0,1,0.1),prior.pred[10,90,],type='h',lty=1,col=col.ssp[2],lwd=2.5)
+axis(1,at=seq(0,1,.2),labels=seq(0,10,2),pos=c(0,0),cex.axis=1.8,padj=0.2)
+axis(2,las=2,cex.axis=1.5,at=seq(0.1,0.4,0.1),hadj = 0.85)
+
+par(yaxs='i')
+plot(seq(0,1,0.1),prior.pred[90,90,],type='n',lty=1,axes=F,
+     ann=F,col="#08306b",lwd=2,ylim=c(0,0.4))
+box(bty='l')
+legend('topright',legend=bquote(paste(H(hat(y))," = ",.(round(entropy[90,90],2)))),col="#08306b",
+       bty='n',cex=1.2)
+mtext(expression(paste('Beta-Binomial (',alpha,' =90, ',beta,' =90, ',n,' =10)')),side=3,line=0,cex=1)
+dx <- dbeta(seq(0,1,0.001),90,90)
+dx <- max(prior.pred[90,90,])*dx/max(dx)
+polygon(c(seq(0,1,0.001),seq(0,1,0.001)),c(dx,rep(0,length(dx))),border=F,col=col.ssp[1])
+lines(seq(0,1,0.1),prior.pred[90,90,],type='h',lty=1,col=col.ssp[2],lwd=2.5)
+axis(1,at=seq(0,1,.2),labels=seq(0,10,2),pos=c(0,0),cex.axis=1.8,padj=0.2)
+axis(2,las=2,cex.axis=1.5,at=seq(0.1,0.4,0.1),labels=rep('',length(seq(0.1,0.4,0.1))),hadj = 0.85)
+mtext('Success Count',side=1,line=1,cex=1.2,outer=T)
+mtext(expression(paste(p,'( ',hat(y),' )')),side=2,line=1,cex=1,outer=T)
+dev.off()
+
+#### Figure 6: Entropy surface and crossing prior predictive entropies ####
+
+# load entropy surface sample size n = 10
+load('data/nested_entropysurface.Rdata')
+
+# load entropy as a functino of sample size and prior distribution
+load('data/nested_beta_entropysamplesize.Rdata')
+
+# load entropy of fixed parameter model as a function of sample size
+load('data/nested_binom_entropysamplesize.Rdata')
+
+pdf(file='fig/bb_abet.pdf',width = 8,height = 3.7)
+col.fx.nh <- colorRampPalette(c("#ce7a8d","#4d0516"))(length(unique(entropy)))
+cmp.col <- sort(unique(entropy))
+par(xaxs='i',yaxs='i',
+    fig=c(0,0.35,0,1),
+    mai=c(0,0,0,0),
+    oma=c(3.5,3.5,1,1))
+plot(0,0,ann=F,axes=F,type='n',ylim=c(1,100),xlim=c(1,100))
+box()
+for(i in 1:100){
+  for(j in 1:100){
+    rect(i-0.5,j-0.5,i+0.5,j+0.5,border=col.fx.nh[which(cmp.col==entropy[i,j])],col =col.fx.nh[which(cmp.col==entropy[i,j])],
+         lwd=0)
+  }
+}
+axis(1,cex.axis=1.2,at=c(1,seq(20,100,20)))
+axis(2,las=2,cex.axis=1.2,at=c(1,seq(20,100,20)))
+mtext(expression(paste(alpha)),side=1,cex=1.2,line=2.3)
+mtext(expression(paste(beta)),side=2,las=2,cex=1.2,line=2.4)
+
+par(xaxs='i',yaxs='i',
+    fig=c(0.36,0.38,0,1),
+    mai=c(0,0,0,0),
+    oma=c(3.5,3.5,1,.5),new=T)
+plot(0,0,ylim=c(0,10000),axes=F,ann=F,type='n',xlim=c(0,1))
+axis(4,las=2,at=c(1,2500,7500,10000),cex.axis=1.1,hadj = 0.3,
+     labels=c(bquote(.(round(min(entropy),1))),
+              bquote(.(round(quantile(entropy,probs = 0.25),1))),
+              bquote(.(round(quantile(entropy,probs = 0.75),1))),
+              bquote(.(round(max(entropy),1)))))
+mtext(expression(paste(H,'(',hat(y),')')),side=4,las=2,line=0.3,cex=1.3)
+for(i in 1:length(cmp.col)){
+  rect(0,i-0.5,1,i+0.5,border=col.fx.nh[i],col =col.fx.nh[i],
+       lwd=0)
+}
+
+par(yaxs='i',
+    fig=c(0.46,0.73,0,1),
+    mai=c(0,0.5,0,0),
+    new=T)
+plot(0,0,ann=F,axes=F,type='n',ylim=c(0,4),xlim=c(0,31))
+lines(siz,e.beta[,1],col=col.ssp[4],type='l',lwd=1.5)
+points(siz,e.beta[,1],pch=21,bg=col.ssp[4],col='white',cex=0.8)
+lines(siz,e.binom,col=col.ssp[3],lwd=1.5)
+points(siz,e.binom,col='white',bg=col.ssp[3],pch=21,cex=0.8)
+box(bty='l')
+axis(1,at=c(1,seq(10,30,10)),padj = -0.4,cex.axis=1.2)
+axis(2,las=2,at=seq(1,4,1),labels = seq(1,4,1),mgp=c(3,0.8,0),cex.axis=1.2)
+mtext('Prior predictive entropy',side=2,line=1.5,cex=1.2,at=)
+legend("topleft",legend = c(expression(paste(theta, " = ",0.5)),
+                                expression(paste(theta, " ~ Beta (6,6)", ))),lty=c(1,1),pch=c(21,21),
+       col=c(col.ssp[3],col.ssp[4]),pt.bg=c(col.ssp[3],col.ssp[4]),bty='n',cex=0.9)
+
+par(yaxs='i',
+    fig=c(0.73,1,0,1),
+    mai=c(0,0.5,0,0),
+    new=T)
+plot(0,0,ann=F,axes=F,type='n',ylim=c(0,4),xlim=c(0,31))
+rect(xleft = which(e.binom<e.beta[,2])[1]-1,xright = which(e.binom<e.beta[,2])[1]+1,
+     ybottom = mean(e.binom[19],e.beta[19,2])-0.15,ytop = mean(e.binom[19],e.beta[19,2])+0.15,
+     border=NA,col=col.ssp[1])
+lines(siz,e.beta[,2],col=col.ssp[4],type='l',lwd=1.5)
+points(siz,e.beta[,2],pch=21,bg=col.ssp[4],col='white',cex=0.8)
+lines(siz,e.binom,col=col.ssp[3],lwd=1.5)
+points(siz,e.binom,col='white',bg=col.ssp[3],pch=21,cex=0.8)
+box(bty='l')
+axis(1,at=c(1,seq(10,30,10)),padj = -0.4,cex.axis=1.2)
+axis(2,las=2,at=seq(1,4,1),labels = seq(1,4,1),mgp=c(3,0.8,0),cex.axis=1.2)
+mtext(expression(paste("Sample size (",n,")")),side=1,line=2.3,cex=1.2,at=-4)
+legend("topleft",legend = c(expression(paste(theta, " = ",0.5)),
+                                expression(paste(theta, " ~ Beta (10,2)"))),
+       lty=c(1,1),pch=c(21,21),
+       col=c(col.ssp[3],col.ssp[4]),pt.bg=c(col.ssp[3],col.ssp[4]),bty='n',cex=0.9)
 dev.off()

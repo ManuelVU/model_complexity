@@ -1,3 +1,9 @@
+# Functions used by multiple .R files in the project. These are the main functions
+# used to simulate behavior.
+
+#### Example: Hierarchical and independent Psychophysics model #### 
+
+# by defaul the function simulates behavior using the hierarchical model
 psyphisics <- function(model='h',populations,participants,binom.samplesize,stimulus.values,standard,
                        prior.mu.a=c(0,44),prior.sigma.a=c(0,40),prior.mu.b=c(0,84),prior.sigma.b=c(0,86),
                        prior.alpha=c(0,50),prior.beta=c(0,100)){
